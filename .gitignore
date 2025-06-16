@@ -1,0 +1,23 @@
+# Docker
+.env
+docker-compose.override.yml
+
+# SIU Toba específicos
+/toba/
+/var/
+*.log
+
+# Archivos temporales
+*.tmp
+*.bak
+*~
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
