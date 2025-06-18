@@ -52,7 +52,7 @@ siu-toba-docker-template/
 
 ```bash
 git clone <tu-repositorio>
-cd siu-toba-docker-template
+cd template-toba
 ```
 
 ### 2. Construir y ejecutar
