@@ -230,6 +230,11 @@ php bin/toba instalacion instalar
 - Schema: `desarrollo`
 - Clave usuario toba: `toba`
 
+```bash
+# salir del contenedor
+exit
+```
+
 ### 8. Configuración Final de Apache
 
 ```bash
