@@ -51,7 +51,7 @@ siu-toba-docker-template/
 ### 1. Clonar el repositorio
 
 ```bash
-git clone <tu-repositorio>
+git clone https://github.com/cristianfloyd/template-toba.git
 cd template-toba
 ```
 
