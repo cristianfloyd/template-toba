@@ -26,7 +26,7 @@ Template completo para la instalación y configuración de **SIU Toba 3.4.8** ut
 
 ## 📁 Estructura del Proyecto
 
-```
+```bash
 siu-toba-docker-template/
 ├── 📄 README.md                                    # Este archivo
 ├── 🐳 Dockerfile                                   # Configuración Docker multi-stage
@@ -65,7 +65,7 @@ docker-compose up -d --build
 docker-compose ps
 ```
 
-### 3. Verificar instalación
+### 2.1 Verificar instalación (Opcional)
 
 ```bash
 # Verificar logs del servicio web
@@ -75,7 +75,19 @@ docker-compose logs app
 curl -I http://localhost:8080
 ```
 
-## 🔧 Configuración
+### 3. Instalacion de toba
+
+- 📘 **[--> 3.1 Instalación de SIU Toba con Docker](./01-Instalación%20de%20SIU%20Toba%20con%20Docker.md)**
+  - Configuración completa del entorno
+  - Descarga del framework TOBA
+  - Instalación y configuración del proyecto
+
+- ⚙️ **[3.2 (OPCIONAL) Configuraciones avanzadas del entorno docker](./02-Configuraciones%20avanzadas%20del%20entorno%20docker.md)**
+  - Optimizaciones de rendimiento
+  - Configuraciones de seguridad
+  - Personalización del entorno
+
+## 🔧 Parametros de Configuración
 
 ### Servicios Docker
 
@@ -85,6 +97,8 @@ curl -I http://localhost:8080
 | **db** | 7432 | PostgreSQL | `postgres/postgres` |
 
 ### Variables de Entorno Principales
+
+En el archivo docker_compose.yml
 
 ```bash
 # Base de datos
@@ -101,20 +115,6 @@ TOBA_PASS=toba
 DOCKER_WEB_PORT=8080
 TZ=America/Argentina/Buenos_Aires
 ```
-
-## 📖 Documentación Detallada
-
-Para una guía paso a paso completa, consulta:
-
-- 📘 **[Instalación de SIU Toba con Docker](./01-Instalación%20de%20SIU%20Toba%20con%20Docker.md)**
-  - Configuración completa del entorno
-  - Descarga del framework TOBA
-  - Instalación y configuración del proyecto
-
-- ⚙️ **[Configuraciones avanzadas del entorno docker](./02-Configuraciones%20avanzadas%20del%20entorno%20docker.md)**
-  - Optimizaciones de rendimiento
-  - Configuraciones de seguridad
-  - Personalización del entorno
 
 ## 🗄️ Gestión de la Base de Datos
 
@@ -178,6 +178,7 @@ docker-compose exec app ps aux
 ## 🚨 Solución de Problemas
 
 ### Problema: Puerto 8080 en uso
+
 ```bash
 # Cambiar puerto en docker-compose.yml
 ports:
@@ -185,6 +186,7 @@ ports:
 ```
 
 ### Problema: Permisos de archivos
+
 ```bash
 # El contenedor usa usuario 'siu' (UID 222)
 # Si necesitas cambiar permisos desde el host:
@@ -192,6 +194,7 @@ sudo chown -R 222:33 ./carpeta-problema
 ```
 
 ### Problema: Base de datos no conecta
+
 ```bash
 # Verificar que PostgreSQL esté funcionando
 docker-compose exec db pg_isready -U postgres
@@ -231,4 +234,4 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 
 ---
 
-*Desarrollado con ❤️ para la comunidad SIU Toba* 
+*Desarrollado con ❤️ para la comunidad SIU Toba*
