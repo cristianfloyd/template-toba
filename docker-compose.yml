@@ -4,8 +4,12 @@ services:
       context: .
       dockerfile: Dockerfile
       target: rootless
+      args:
+        USER_ID: "${UID:-1000}"
+        GROUP_ID: "${GID:-1000}"
     container_name: toba-app
     restart: unless-stopped
+    user: "${UID:-1000}:${GID:-1000}"
     working_dir: /usr/local/app
     volumes:
       - ./:/usr/local/app

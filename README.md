@@ -140,6 +140,18 @@ docker-compose exec -T db psql -U postgres toba_3_4 < backup_toba.sql
 
 ## 🛠️ Comandos Útiles
 
+### Pausar y Reanudar el Entorno (Recomendado)
+
+Para detener el entorno de trabajo sin perder cambios internos de los contenedores (como el enlace a `toba.conf`), utiliza `stop`.
+
+```bash
+# Pausar los servicios (conserva los cambios)
+docker-compose stop
+
+# Reanudar los servicios
+docker-compose start
+```
+
 ### Gestión de contenedores
 
 ```bash
@@ -152,10 +164,10 @@ docker-compose exec app bash
 # Reiniciar servicios
 docker-compose restart
 
-# Parar todos los servicios
+# Parar todos los servicios (⚠️ elimina los contenedores, los cambios internos se pierden)
 docker-compose down
 
-# Parar y eliminar volúmenes (⚠️ se perderán los datos)
+# Parar y eliminar volúmenes (⚠️ se perderán los datos de la DB)
 docker-compose down -v
 ```
 

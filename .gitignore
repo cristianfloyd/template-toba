@@ -17,7 +17,15 @@ docker-compose.override.yml
 .idea/
 *.swp
 *.swo
+.yarnrc
+.cache
+.composer
+CLAUDE.md
+GEMINI.md
 
 # Sistema operativo
 .DS_Store
 Thumbs.db
+.serena
+instalacion
+.bash_history

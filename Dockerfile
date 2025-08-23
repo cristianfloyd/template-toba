@@ -49,8 +49,9 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # https://gitlab.alpinelinux.org/alpine/aports/-/issues/12308
 # RUN ln -s /usr/bin/php81 /usr/bin/php
 
-COPY common/siu-entrypoint.d/* /siu-entrypoint.d/
-COPY common/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY ./common/siu-entrypoint.d/* /siu-entrypoint.d/
+COPY ./common/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT ["entrypoint.sh"]
 
@@ -74,16 +75,18 @@ EXPOSE 8080
 
 FROM web AS rootless
 
+ARG USER_ID=1000
+ARG GROUP_ID=1000
 ARG USER=siu
 ENV USER=$USER
-ARG UID=222
 
-RUN adduser -h /usr/local/app -u $UID -G www-data -S $USER \
+RUN adduser -h /usr/local/app -u ${USER_ID} -G www-data -S ${USER} \
     && mkdir -p /usr/local/app/www \
     && mkdir -p /usr/local/app/temp \
     && mkdir -p /usr/local/app/proyectos \
     && mkdir -p /usr/local/app/instalacion \
-    && chown -R $USER:www-data \
+    && mkdir -p /var/local/docker-data/framework-instalacion \
+    && chown -R ${USER}:www-data \
         /var/run/apache2 \
         /var/log/apache2 \
         /etc/php82/conf.d \
@@ -91,6 +94,7 @@ RUN adduser -h /usr/local/app -u $UID -G www-data -S $USER \
         /var/www/localhost/htdocs \
         /siu-entrypoint.d \
         /usr/local/app \
+        /var/local/docker-data \
     && chmod -R g+w \
         /usr/local/app/www \
         /usr/local/app/temp \
@@ -103,4 +107,5 @@ RUN adduser -h /usr/local/app -u $UID -G www-data -S $USER \
         /etc/apache2/conf.d \
         /var/www/localhost/htdocs \
         /siu-entrypoint.d
-USER $USER
+
+USER ${USER}

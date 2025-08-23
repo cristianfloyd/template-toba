@@ -103,6 +103,8 @@ docker-compose exec app httpd -t
 docker-compose restart app
 ```
 
+> **Nota Importante:** Este enlace simbólico se crea dentro del contenedor. Si en algún momento detienes el entorno con `docker-compose down`, el contenedor se eliminará y tendrás que volver a ejecutar este comando. Para pausar y reanudar el trabajo, utiliza `docker-compose stop` y `docker-compose start`.
+
 ---
 
 ### 5. Verificación de Instalación Exitosa
