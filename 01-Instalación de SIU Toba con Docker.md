@@ -32,11 +32,11 @@ Existen **dos opciones** para descargar el framework TOBA desde el [repositorio 
 #### Opción 1: Git Clone (Recomendado para desarrollo)
 
 ```bash
-docker-compose exec app bash
+docker compose exec app bash
 cd /usr/local/app
 git clone https://github.com/SIU-Toba/framework.git toba_framework
 cd toba_framework
-git checkout v3.4.8  # O la rama deseada
+git checkout v3.3  # Opcional: para cambiar de rama, pore ejemplo a v3.3
 ```
 
 #### Opción 2: Descarga ZIP (Más rápido)
@@ -77,6 +77,7 @@ php bin/toba instalacion instalar
 ```
 
 **Configuración utilizada:**
+
 - Alias del núcleo: `toba`
 - Número de desarrollador: `300`
 - Instalación de producción: `No`
@@ -114,6 +115,7 @@ docker-compose logs app | tail -20
 ```
 
 **Mensajes esperados en los logs:**
+
 - `[INFO][toba] Se detecto cambio de operación. Se limpia la memoria de la operacion`
 - `[DEBUG][toba_editor] INSTANCIA "desarrollo"`
 - `[DEBUG][toba_editor] Parametros instancia desarrollo`
@@ -124,9 +126,11 @@ docker-compose logs app | tail -20
 
 ## Accesos Web Disponibles
 
-- **🏠 http://localhost:8080/toba_editor/3.4** - Editor principal de TOBA
-- **📚 http://localhost:8080/toba_referencia/3.4** - Ejemplos y documentación
-- **👥 http://localhost:8080/toba_usuarios/3.4** - Gestión de usuarios
+- **🏠 <http://localhost:8080/toba_editor/3.4>** - Editor principal de TOBA
+
+- **📚 <http://localhost:8080/toba_referencia/3.4>** - Ejemplos y documentación
+
+- **👥 <http://localhost:8080/toba_usuarios/3.4>** - Gestión de usuarios
 
 ---
 
@@ -182,18 +186,21 @@ El archivo `/var/local/docker-data/framework-instalacion/entorno_toba.env` conti
 
 ### Problemas Comunes
 
-1. **Error de permisos:**
+1.**Error de permisos:**
+
  ```bash
  docker-compose exec app chown -R siu:www-data /usr/local/app
  ```
 
-2. **Apache no inicia:**
+2.**Apache no inicia:**
+
  ```bash
  docker-compose exec app httpd -t
  docker-compose restart app
  ```
 
-3. **Base de datos no conecta:**
+3.**Base de datos no conecta:**
+
  ```bash
  docker-compose exec app php -r "
  try {
@@ -226,5 +233,3 @@ El archivo `/var/local/docker-data/framework-instalacion/entorno_toba.env` conti
 - **Total estimado:** ~10-15 minutos
 
 ---
-
-**🎉 ¡Instalación exitosa! TOBA 3.4.8 está listo para desarrollo.**
