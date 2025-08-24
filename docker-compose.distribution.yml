@@ -1,0 +1,52 @@
+# Docker Compose para distribución de Toba configurado
+# Este archivo usa imágenes pre-construidas en lugar de Dockerfile
+
+version: '3.8'
+
+services:
+  app:
+    # Cambiar esta imagen por la tuya en el registry
+    image: ghcr.io/cristianfloyd/toba-dev:latest
+    container_name: toba-app
+    networks:
+      - toba-net
+    ports:
+      - "8080:80"
+    volumes:
+      # Montar código del proyecto para desarrollo en tiempo real
+      - ./uba_mg:/usr/local/app/toba_framework/proyectos/uba_mg
+      # Volúmenes adicionales para desarrollo
+      - ./logs:/var/log/apache2
+      - ./uploads:/usr/local/app/uploads  # Si la app maneja uploads
+    environment:
+      - TZ=America/Argentina/Buenos_Aires
+      - PHP_MEMORY_LIMIT=512M
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    # Usar imagen estándar de PostgreSQL
+    image: postgres:16-alpine
+    container_name: toba-db
+    networks:
+      - toba-net
+    ports:
+      - "7432:5432"
+    environment:
+      POSTGRES_DB: toba_3_4
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      TZ: America/Argentina/Buenos_Aires
+    volumes:
+      # Volumen persistente para datos de la DB
+      - toba-db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+networks:
+  toba-net:
+    driver: bridge
+
+volumes:
+  toba-db-data:
+    driver: local

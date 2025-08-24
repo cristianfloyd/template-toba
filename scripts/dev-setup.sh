@@ -1,0 +1,93 @@
+#!/bin/bash
+
+# Script completo de setup para desarrolladores
+# Configura el entorno de desarrollo con imagen pre-construida + código local
+
+set -e
+
+echo "🚀 Configurando entorno de desarrollo Toba..."
+
+# Verificar requisitos
+echo "🔍 Verificando requisitos..."
+command -v docker >/dev/null 2>&1 || { echo "❌ Docker no instalado"; exit 1; }
+command -v docker-compose >/dev/null 2>&1 || { echo "❌ Docker Compose no instalado"; exit 1; }
+
+# Verificar puertos disponibles
+if netstat -tuln | grep -q ":8080 "; then
+    echo "⚠️  Puerto 8080 en uso. Cambiando a 8081..."
+    sed -i 's/"8080:80"/"8081:80"/g' docker-compose.distribution.yml
+fi
+
+if netstat -tuln | grep -q ":7432 "; then
+    echo "⚠️  Puerto 7432 en uso. Cambiando a 7433..."
+    sed -i 's/"7432:5432"/"7433:5432"/g' docker-compose.distribution.yml
+fi
+
+# Obtener imagen actualizada
+echo "📥 Descargando imagen más reciente..."
+docker-compose -f docker-compose.distribution.yml pull app
+
+# Iniciar servicios en background
+echo "🐳 Iniciando contenedores..."
+docker-compose -f docker-compose.distribution.yml up -d
+
+# Esperar a que los servicios estén listos
+echo "⏳ Esperando que los servicios inicien..."
+sleep 10
+
+# Verificar que la app esté funcionando
+echo "🔍 Verificando estado de la aplicación..."
+if curl -f -s http://localhost:8080 >/dev/null 2>&1; then
+    echo "✅ Aplicación accesible en http://localhost:8080"
+elif curl -f -s http://localhost:8081 >/dev/null 2>&1; then
+    echo "✅ Aplicación accesible en http://localhost:8081"
+else
+    echo "⚠️  La aplicación puede tardar unos segundos más en estar lista"
+fi
+
+# Extraer código del proyecto para edición
+if [ ! -d "./uba_mg" ]; then
+    echo "📁 Extrayendo código del proyecto..."
+    ./scripts/extract-project.sh
+else
+    echo "📁 Código del proyecto ya existe en ./uba_mg"
+fi
+
+# Verificar si la base de datos está inicializada
+echo "🗃️  Verificando estado de la base de datos..."
+DB_INITIALIZED=$(docker-compose -f docker-compose.distribution.yml exec -T db psql -U postgres -d toba_3_4 -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'uba_mg';" 2>/dev/null | grep -o '[0-9]\+' || echo "0")
+
+if [ "$DB_INITIALIZED" = "0" ]; then
+    echo "🔧 Base de datos vacía, inicializando con datos del proyecto..."
+    
+    # Buscar backup seed en el repositorio
+    SEED_BACKUP=$(find ./backups/database/ -name "*seed*.sql.gz" 2>/dev/null | head -1)
+    if [ -n "$SEED_BACKUP" ]; then
+        echo "📥 Restaurando desde backup seed: $SEED_BACKUP"
+        gunzip -c "$SEED_BACKUP" | docker-compose -f docker-compose.distribution.yml exec -T db psql -U postgres -d toba_3_4
+        echo "✅ Base de datos inicializada correctamente"
+    else
+        echo "⚠️  No se encontró backup seed. La base de datos estará vacía."
+        echo "   Ejecuta: ./scripts/backup-database.sh para crear datos de prueba"
+    fi
+else
+    echo "✅ Base de datos ya inicializada ($DB_INITIALIZED tablas encontradas)"
+fi
+
+# Mostrar información final
+echo ""
+echo "🎉 ¡Entorno de desarrollo configurado!"
+echo ""
+echo "📂 Estructura del proyecto:"
+echo "   ├── uba_mg/              # Código PHP del proyecto (editable en VS Code)"
+echo "   ├── docker-compose.distribution.yml"
+echo "   └── backups/            # Backups de base de datos"
+echo ""
+echo "🛠️  Comandos útiles:"
+echo "   code ./uba_mg           # Abrir proyecto en VS Code"
+echo "   docker-compose -f docker-compose.distribution.yml logs -f app"
+echo "   docker-compose -f docker-compose.distribution.yml exec app bash"
+echo ""
+echo "🌐 URLs:"
+echo "   Aplicación: http://localhost:8080 (o 8081)"
+echo "   PostgreSQL: localhost:7432 (o 7433)"

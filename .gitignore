@@ -31,3 +31,14 @@ Thumbs.db
 instalacion/*
 .bash_history
 toba_framework
+
+# Archivos de backup temporales (excepto seed)
+backups/database/toba-db-backup-*.sql.gz
+backups/database/toba-db-schema-*.sql.gz
+backups/database/toba-roles-*.sql
+
+# Permitir el backup seed
+!backups/database/toba-seed-backup.sql.gz
+
+# Código extraído (se genera automáticamente)
+uba_mg/
