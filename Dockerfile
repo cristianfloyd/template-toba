@@ -108,4 +108,8 @@ RUN adduser -h /usr/local/app -u ${USER_ID} -G www-data -S ${USER} \
         /var/www/localhost/htdocs \
         /siu-entrypoint.d
 
+# Copiar script de corrección de Bootstrap assets
+COPY docker/scripts/fix-bootstrap-assets.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/fix-bootstrap-assets.sh
+
 USER ${USER}
