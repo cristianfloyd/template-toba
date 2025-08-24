@@ -38,7 +38,7 @@ RUN chmod +x /usr/local/bin/fix-bootstrap-assets.sh
 RUN fix-bootstrap-assets.sh
 ```
 
-## Archivos creados
+## Archivos
 
 - `docker/scripts/fix-bootstrap-assets.sh` - Script de corrección principal
 - `docker/scripts/install-bootstrap.sh` - Script de conveniencia para ejecutar desde host
