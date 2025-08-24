@@ -12,6 +12,12 @@ echo "🔍 Verificando requisitos..."
 command -v docker >/dev/null 2>&1 || { echo "❌ Docker no instalado"; exit 1; }
 command -v docker-compose >/dev/null 2>&1 || { echo "❌ Docker Compose no instalado"; exit 1; }
 
+# Crear directorios necesarios con permisos correctos
+echo "📁 Creando directorios necesarios..."
+mkdir -p logs uploads
+chmod 755 logs uploads
+chown 1000:82 logs uploads 2>/dev/null || true
+
 # Verificar puertos disponibles
 if netstat -tuln | grep -q ":8080 "; then
     echo "⚠️  Puerto 8080 en uso. Cambiando a 8081..."

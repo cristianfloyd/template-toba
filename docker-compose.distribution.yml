@@ -1,13 +1,12 @@
 # Docker Compose para distribución de Toba configurado
 # Este archivo usa imágenes pre-construidas en lugar de Dockerfile
 
-version: '3.8'
-
 services:
   app:
     # Cambiar esta imagen por la tuya en el registry
     image: ghcr.io/cristianfloyd/toba-dev:latest
     container_name: toba-app
+    user: "1000:82"  # siu:www-data (Alpine default)
     networks:
       - toba-net
     ports:
