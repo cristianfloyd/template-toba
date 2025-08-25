@@ -89,7 +89,7 @@ fi
 
 # Verificar si la base de datos está inicializada (verificando tabla principal de Toba)
 echo "🗃️  Verificando estado de la base de datos..."
-DB_INITIALIZED=$(docker-compose -f docker-compose.distribution.yml exec -T db psql -U postgres -d toba_3_4 -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'apex_proyecto';" 2>/dev/null | grep -o '[0-9]\+' || echo "0")
+DB_INITIALIZED=$(docker-compose -f docker-compose.distribution.yml exec -T db psql -U postgres -d toba_3_4 -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'desarrollo' AND table_name = 'apex_proyecto';" 2>/dev/null | grep -o '[0-9]\+' || echo "0")
 
 if [ "$DB_INITIALIZED" = "0" ]; then
     echo "🔧 Base de datos vacía, inicializando con datos del proyecto..."
@@ -109,7 +109,7 @@ if [ "$DB_INITIALIZED" = "0" ]; then
         echo "✅ Base de datos inicializada correctamente"
         
         # Verificar que la inicialización fue exitosa
-        DB_CHECK=$(docker-compose -f docker-compose.distribution.yml exec -T db psql -U postgres -d toba_3_4 -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'apex_proyecto';" 2>/dev/null | grep -o '[0-9]\+' || echo "0")
+        DB_CHECK=$(docker-compose -f docker-compose.distribution.yml exec -T db psql -U postgres -d toba_3_4 -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'desarrollo' AND table_name = 'apex_proyecto';" 2>/dev/null | grep -o '[0-9]\+' || echo "0")
         if [ "$DB_CHECK" = "1" ]; then
             echo "✅ Verificación exitosa: Tabla apex_proyecto encontrada"
         else
