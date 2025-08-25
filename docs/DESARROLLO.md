@@ -13,7 +13,8 @@ cd template-toba
 ./scripts/dev-setup.sh
 ```
 
-**¡Listo!** En ~2 minutos tendrás:
+**¡Listo!** En ~2 minutos:
+
 - Framework Toba funcionando
 - Base de datos con datos del proyecto
 - Código PHP local para editar en VS Code
@@ -21,9 +22,10 @@ cd template-toba
 ## Desarrollo con VS Code
 
 ### Estructura del Proyecto
-```
+
+```bash
 template-toba/
-├── uba_mg/                    # 📝 Código PHP del proyecto (EDITABLE)
+├── uba_mg/                    # Código PHP del proyecto (EDITABLE)
 │   ├── php/                   # Lógica de negocio
 │   │   ├── operaciones/       # Operaciones Toba
 │   │   ├── reportes/          # Reportes y exportaciones
@@ -37,6 +39,7 @@ template-toba/
 ### Flujo de Desarrollo
 
 1. **Abrir VS Code**
+
    ```bash
    code ./uba_mg
    ```
@@ -47,12 +50,14 @@ template-toba/
    - Hot reload automático
 
 3. **Ver cambios**
-   - Aplicación: http://localhost:8080
+
+   - Aplicación: <http://localhost:8080>
    - Logs: `docker-compose -f docker-compose.distribution.yml logs -f app`
 
 ## Desarrollo de Componentes Toba
 
 ### Operaciones PHP
+
 ```php
 // uba_mg/php/operaciones/mi_operacion.php
 <?php
@@ -65,6 +70,7 @@ class mi_operacion extends uba_mg_modelo
 ```
 
 ### Cuadros de Datos
+
 ```php
 // uba_mg/php/operaciones/ci_mi_cuadro.php
 <?php
@@ -77,6 +83,7 @@ class ci_mi_cuadro extends toba_ei_cuadro
 ```
 
 ### CSS y Assets
+
 ```css
 /* uba_mg/www/css/toba.css */
 .mi-componente {
@@ -87,6 +94,7 @@ class ci_mi_cuadro extends toba_ei_cuadro
 ## Base de Datos
 
 ### Acceso Directo
+
 ```bash
 # Conectar a PostgreSQL
 docker-compose -f docker-compose.distribution.yml exec db psql -U postgres -d toba_3_4
@@ -96,6 +104,7 @@ docker-compose -f docker-compose.distribution.yml exec db psql -U postgres -d to
 ```
 
 ### Migraciones
+
 ```sql
 -- uba_mg/sql/migrations/nueva_version.sql
 ALTER TABLE uba_mg.mi_tabla ADD COLUMN nueva_columna VARCHAR(100);
@@ -104,6 +113,7 @@ ALTER TABLE uba_mg.mi_tabla ADD COLUMN nueva_columna VARCHAR(100);
 ## Comandos Útiles
 
 ### Contenedores
+
 ```bash
 # Ver estado
 docker-compose -f docker-compose.distribution.yml ps
@@ -119,6 +129,7 @@ docker-compose -f docker-compose.distribution.yml restart
 ```
 
 ### Toba Framework
+
 ```bash
 # Acceder al contenedor
 docker-compose exec app bash
@@ -134,12 +145,14 @@ cd /usr/local/app/toba_framework
 ## Debugging
 
 ### Logs de PHP
+
 ```bash
 # Ver logs de Apache/PHP
 docker-compose -f docker-compose.distribution.yml exec app tail -f /var/log/apache2/error.log
 ```
 
 ### Debugging con Xdebug
+
 El contenedor incluye Xdebug configurado:
 
 ```json
@@ -177,13 +190,23 @@ El contenedor incluye Xdebug configurado:
 ## Resolución de Problemas
 
 ### Error: Permisos de archivos
+
 ```bash
 # Ajustar permisos
 sudo chown -R $USER:$USER ./uba_mg
 chmod -R 755 ./uba_mg
 ```
 
+### Error: bases de datos sin esquemas
+
+- Ejecutar el siguiente  script desde la raiz del contenedor:
+
+```bash
+gunzip -c ./backups/database/toba-seed-backup.sql.gz | docker-compose -f docker-compose.distribution.yml exec -T db psql -U postgres -d toba_3_4
+```
+
 ### Error: Puerto en uso
+
 ```bash
 # Cambiar puerto en docker-compose.distribution.yml
 ports:
@@ -191,6 +214,7 @@ ports:
 ```
 
 ### Error: Contenedor no inicia
+
 ```bash
 # Ver logs detallados
 docker-compose -f docker-compose.distribution.yml logs app
@@ -200,12 +224,13 @@ docker-compose -f docker-compose.distribution.yml pull
 ```
 
 ### Código no actualiza
+
 ```bash
 # Verificar montaje de volumen
 docker-compose -f docker-compose.distribution.yml exec app ls -la /usr/local/app/toba_framework/proyectos/uba_mg
 
 # Reiniciar Apache
-docker-compose -f docker-compose.distribution.yml exec app service apache2 reload
+docker-compose -f docker-compose.distribution.yml exec app httpd reload
 ```
 
 ## Consejos de Desarrollo
@@ -218,10 +243,10 @@ docker-compose -f docker-compose.distribution.yml exec app service apache2 reloa
 
 ## URLs Importantes
 
-- **Aplicación**: http://localhost:8080
-- **Toba Admin**: http://localhost:8080/toba_framework/php/admin/
+- **Aplicación**: <http://localhost:8080>
+- **Toba Editor**: <http://localhost:8080/toba_editor/3.4/>
 - **Database**: localhost:7432 (postgres/postgres)
 
 ---
 
-💡 **Tip**: Mantén siempre activos los logs con `docker-compose -f docker-compose.distribution.yml logs -f app` en una terminal separada.
+**Tip**: Mantén siempre activos los logs con `docker-compose -f docker-compose.distribution.yml logs -f app` en una terminal separada.
