@@ -87,25 +87,43 @@ else
     echo "✅ Código del proyecto ya existe en ./uba_mg"
 fi
 
-# Verificar si la base de datos está inicializada
+# Verificar si la base de datos está inicializada (verificando tabla principal de Toba)
 echo "🗃️  Verificando estado de la base de datos..."
-DB_INITIALIZED=$(docker-compose -f docker-compose.distribution.yml exec -T db psql -U postgres -d toba_3_4 -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'uba_mg';" 2>/dev/null | grep -o '[0-9]\+' || echo "0")
+DB_INITIALIZED=$(docker-compose -f docker-compose.distribution.yml exec -T db psql -U postgres -d toba_3_4 -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'apex_proyecto';" 2>/dev/null | grep -o '[0-9]\+' || echo "0")
 
 if [ "$DB_INITIALIZED" = "0" ]; then
     echo "🔧 Base de datos vacía, inicializando con datos del proyecto..."
     
     # Buscar backup seed en el repositorio
     SEED_BACKUP=$(find ./backups/database/ -name "*seed*.sql.gz" 2>/dev/null | head -1)
+    SEED_ROLES=$(find ./backups/database/ -name "*seed*.sql" -o -name "*roles*.sql" 2>/dev/null | head -1)
+    
     if [ -n "$SEED_BACKUP" ]; then
-        echo "📥 Restaurando desde backup seed: $SEED_BACKUP"
+        echo "📥 Restaurando roles y usuarios..."
+        if [ -n "$SEED_ROLES" ]; then
+            docker-compose -f docker-compose.distribution.yml exec -T db psql -U postgres < "$SEED_ROLES" 2>/dev/null || true
+        fi
+        
+        echo "📥 Restaurando base de datos completa desde: $SEED_BACKUP"
         gunzip -c "$SEED_BACKUP" | docker-compose -f docker-compose.distribution.yml exec -T db psql -U postgres -d toba_3_4
         echo "✅ Base de datos inicializada correctamente"
+        
+        # Verificar que la inicialización fue exitosa
+        DB_CHECK=$(docker-compose -f docker-compose.distribution.yml exec -T db psql -U postgres -d toba_3_4 -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'apex_proyecto';" 2>/dev/null | grep -o '[0-9]\+' || echo "0")
+        if [ "$DB_CHECK" = "1" ]; then
+            echo "✅ Verificación exitosa: Tabla apex_proyecto encontrada"
+        else
+            echo "⚠️  Advertencia: La restauración puede no haber sido completa"
+        fi
     else
         echo "⚠️  No se encontró backup seed. La base de datos estará vacía."
-        echo "   Ejecuta: ./scripts/backup-database.sh para crear datos de prueba"
+        echo "   Para inicializar manualmente:"
+        echo "   1. Ejecuta el contenedor original: docker-compose up -d"
+        echo "   2. Crea backup: ./scripts/backup-database.sh"
+        echo "   3. Copia el backup como seed a ./backups/database/"
     fi
 else
-    echo "✅ Base de datos ya inicializada ($DB_INITIALIZED tablas encontradas)"
+    echo "✅ Base de datos ya inicializada (tabla apex_proyecto encontrada)"
 fi
 
 # Mostrar información final
