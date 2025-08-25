@@ -112,4 +112,15 @@ RUN adduser -h /usr/local/app -u ${USER_ID} -G www-data -S ${USER} \
 COPY docker/scripts/fix-bootstrap-assets.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/fix-bootstrap-assets.sh
 
+# Copiar framework Toba y proyecto uba_mg a la imagen
+COPY toba_framework/ /usr/local/app/toba_framework/
+RUN chown -R ${USER}:www-data /usr/local/app/toba_framework/
+
+# Copiar configuración de instalación de Toba
+COPY instalacion/ /var/local/docker-data/framework-instalacion/
+RUN chown -R ${USER}:www-data /var/local/docker-data/framework-instalacion/
+
+# Crear symlink para configuración Apache de Toba
+RUN ln -sf /var/local/docker-data/framework-instalacion/toba.conf /etc/apache2/conf.d/toba_3_4.conf
+
 USER ${USER}

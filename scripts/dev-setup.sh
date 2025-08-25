@@ -51,12 +51,40 @@ else
     echo "⚠️  La aplicación puede tardar unos segundos más en estar lista"
 fi
 
-# Extraer código del proyecto para edición
-if [ ! -d "./uba_mg" ]; then
-    echo "📁 Extrayendo código del proyecto..."
-    ./scripts/extract-project.sh
+# Obtener código del proyecto para edición
+if [ ! -d "./uba_mg" ] || [ -z "$(ls -A ./uba_mg)" ]; then
+    echo "📁 Directorio uba_mg no encontrado o vacío"
+    echo ""
+    echo "💡 Para obtener el código del proyecto uba_mg:"
+    echo "   1. Clonar desde GitLab UBA (requiere VPN UBA):"
+    echo "      git clone https://gitlab.rec.uba.ar/grupo/uba_mg.git ./uba_mg"
+    echo ""
+    echo "   2. Copiar desde directorio local:"
+    echo "      cp -r /ruta/local/uba_mg ./uba_mg"
+    echo ""
+    echo "   3. Extraer desde un backup/zip:"
+    echo "      unzip uba_mg.zip && mv uba_mg-backup ./uba_mg"
+    echo ""
+    echo "ℹ️  La configuración de Toba ya está incluida en la imagen Docker"
+    echo ""
+    
+    # Crear directorio vacío
+    mkdir -p ./uba_mg
+    
+    echo "⏸️  El setup continuará cuando tengas el código en ./uba_mg/"
+    echo "   Verifica que contenga: php/, www/, metadatos/, etc."
+    echo ""
+    read -p "Presiona Enter después de agregar el código del proyecto..."
+    
+    # Verificar que se agregó contenido
+    if [ -z "$(ls -A ./uba_mg)" ]; then
+        echo "⚠️  El directorio ./uba_mg sigue vacío"
+        echo "   El contenedor funcionará pero sin código para editar"
+    else
+        echo "✅ Código del proyecto detectado en ./uba_mg"
+    fi
 else
-    echo "📁 Código del proyecto ya existe en ./uba_mg"
+    echo "✅ Código del proyecto ya existe en ./uba_mg"
 fi
 
 # Verificar si la base de datos está inicializada

@@ -10,7 +10,7 @@ services:
     networks:
       - toba-net
     ports:
-      - "8080:80"
+      - "8080:8080"
     volumes:
       # Montar código del proyecto para desarrollo en tiempo real
       - ./uba_mg:/usr/local/app/toba_framework/proyectos/uba_mg

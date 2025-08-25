@@ -1,0 +1,60 @@
+# Docker Compose para CONSTRUIR imagen distribuible
+# Este archivo NO monta volúmenes para que el proyecto se incluya en la imagen
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: rootless
+      args:
+        USER_ID: "1000"
+        GROUP_ID: "82"
+    container_name: toba-build
+    restart: unless-stopped
+    user: "1000:82"
+    working_dir: /usr/local/app
+    environment:
+      - TZ=America/Argentina/Buenos_Aires
+      - DOCKER_NAME=web-toba
+      - DOCKER_WEB_PORT=8080
+      - TOBA_PASS=toba
+      - TOBA_BASE_PASS=postgres
+      - TOBA_INSTALACION_DIR=/var/local/docker-data/framework-instalacion
+      - TOBA_BASE_HOST=db
+      - TOBA_BASE_NOMBRE=toba_3_4
+      - TOBA_PROYECTO_INSTALAR=True
+      - TOBA_INSTALAR_REFERENCIA=True
+      - TOBA_INSTALAR_USUARIOS=True
+      - TOBA_REDIRECCIONAR_LOGS=1
+      - TOBA_INSTANCIA=desarrollo
+      - TOBA_PROYECTO=desarrollo
+      - TOBA_PROYECTO_DIR=/usr/local/app
+      - TOBA_PROYECTO_ALIAS=/toba
+    ports:
+      - "8080:8080"
+    networks:
+      - toba-network
+
+  db:
+    image: postgres:16-alpine
+    ports:
+    - "7432:5432"
+    container_name: toba-build-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: toba_3_4
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      TZ: America/Argentina/Buenos_Aires
+    volumes:
+      - dbdata-build:/var/lib/postgresql/data
+    networks:
+      - toba-network
+
+networks:
+  toba-network:
+    driver: bridge
+
+volumes:
+  dbdata-build:
