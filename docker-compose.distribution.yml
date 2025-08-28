@@ -31,7 +31,7 @@ services:
     networks:
       - toba-net
     ports:
-      - "7432:5432"
+      - "7433:5432"
     environment:
       POSTGRES_DB: toba_3_4
       POSTGRES_USER: postgres
