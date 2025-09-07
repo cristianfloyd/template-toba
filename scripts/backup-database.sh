@@ -23,7 +23,7 @@ SCHEMA_FILE="toba-db-schema-${TIMESTAMP}.sql"
 # Crear directorio de backups
 mkdir -p $BACKUP_DIR
 
-echo "📊 Creando backup completo (datos + esquema)..."
+echo "** Creando backup completo (datos + esquema)..."
 docker-compose exec -T db pg_dump -U postgres -d toba_3_4 --verbose > "$BACKUP_DIR/$BACKUP_FILE"
 
 echo "🏗️  Creando backup solo esquema (sin datos)..."
@@ -44,7 +44,7 @@ echo "   - Solo esquema: $BACKUP_DIR/${SCHEMA_FILE}.gz"
 echo "   - Roles/usuarios: $BACKUP_DIR/toba-roles-${TIMESTAMP}.sql"
 
 echo ""
-echo "🔄 Para restaurar en otro contenedor:"
+echo "** Para restaurar en otro contenedor:"
 echo "   # Copiar roles/usuarios:"
 echo "   docker-compose exec -T db psql -U postgres < backups/database/toba-roles-${TIMESTAMP}.sql"
 echo "   # Restaurar base de datos:"
